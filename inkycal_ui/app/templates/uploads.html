@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="display-4">Inykcal Uploader</h1>
+
+<!-- Information -->
+<div class="alert alert-primary" role="alert">
+    <h4 class="alert-heading">Information</h4>
+    Here you can upload image files and icalendar files.<br>
+    You can upload multiple files at once.<br>
+    The maximum upload size is 16 MB.<br>
+    <hr>
+    You can copy filenames of selected elements by pressing the copy-icon below.<br>
+</div>
+
+<form  action="{{ url_for('uploads') }}" class="dropzone" style="border-style: dashed;border-radius: 20px;border-color: royalblue;border-width: medium;">
+<div class="dz-message needsclick">
+    <button type="button" class="dz-button" style="font-size: x-large;color:royalblue;">Drop files here or click to upload.</button><br>
+</div>
+</form><br>
+
+{% if images %}
+<h4 class="text-center">Images</h4>
+
+<div class="row justify-content-center">
+
+{% for img in images %}
+	{% if images[img] == 'horizontal' %}
+	<div class="customdiv" style="position: relative;width: 96px;height: 96px;overflow: hidden;padding: 5px; border-radius: 20px;border:5px solid transparent">
+		<img id="{{img}}" src="{{ url_for('upload', filename=img) }}" style="position: absolute; left: 50%; top: 50%; height: 100%; width: auto; -webkit-transform: translate(-50%,-50%); -ms-transform: translate(-50%,-50%);transform: translate(-50%,-50%);">
+	</div>
+	{% else %}
+	<div class="customdiv" style="position: relative;width: 96px;height: 96px;overflow: hidden; border-radius: 20px;border:5px solid transparent">
+		<img id="{{img}}" src="{{ url_for('upload', filename=img) }}" style="width:100%; height:auto;position: relative; top: 50%;transform: translateY(-50%);">
+	</div>
+	{% endif %}
+	
+{% endfor %}
+</div><br>
+
+{% endif %}
+
+{% if icalendars %}
+	<h4 class="text-center">iCalendar files</h4>
+{% endif %}
+
+<div class="row justify-content-center">
+{% for ical in icalendars %}
+
+	<div class="customdiv" style="background-color: white; display: flex;justify-content: center;height: 35px;width: 90%;border-radius: 10px;border:5px solid transparent">
+		<p id="{{ical}}">{{ ical }}</p>
+	</div>
+	<br><br>
+{% endfor %}
+</div><br>
+
+<div class="input-group mb-3">
+<button type="button" class="btn btn-outline-secondary" onclick="copy_to_clipboard()"><i class="bi bi-files"></i></button>
+<input id="show_selection" type="text" class="form-control" value="" readonly>
+</div>
+
+<script>
+function copy_to_clipboard() {
+  /* Get the text field */
+  var copyText = document.getElementById("show_selection");
+
+  /* Select the text field */
+  copyText.select();
+  copyText.setSelectionRange(0, 99999); /* For mobile devices */
+
+  /* Copy the text inside the text field */
+  document.execCommand("copy");
+
+}
+</script>
+
+
+<form class="needs-validation" method="post" id="files" novalidate>
+{{ form.hidden_tag() }}
+
+<div class="form-group">
+
+	<button type="button" class="btn btn-outline-secondary btn-lg btn-block" data-toggle="modal" data-target="#confirm">
+	Delete selected files
+	</button>
+
+</div>
+
+<!-- save selected elements -->
+<div class="form-group">
+	<input type="text" class="d-none" id="selection" name="selection" value="" readonly><br>
+</div>
+
+
+<!-- Modal - popup confirming if files should be deleted -->
+<div class="modal fade" id="confirm" tabindex="-1" role="dialog" aria-labelledby="confirm" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+
+
+		<div class="modal-content">
+
+			<div class="modal-header">
+				<h5 class="modal-title" id="confirm">Warning!</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+
+			<div class="modal-body">
+				Are you sure you want to permanently delete the selected files?<br>
+				Deleted files cannot be recovered later!<br>
+			</div>
+
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-outline-danger" type="submit" onClick="$('form#files').submit();">Confirm</button>
+			</div>
+
+		</div>
+
+
+	</div>
+</div>
+
+
+</form>
+
+<script>
+$(document).ready(function() {
+
+$('.customdiv').on('click',function() {
+
+	// mark the selected element by tagging the class selected
+	if($(this).hasClass("selected")) {
+		$(this).removeClass("selected");
+		//console.log('unselecting');
+		$(this).css('border', '5px solid transparent');
+	} else {
+		$(this).addClass("selected");
+		//console.log('selecting');
+		$(this).css('border','5px solid  #EE178C');
+	}
+	
+	// Create a variable containing filenames of all selected elements 
+	var selected = "";
+	$('*[class*="selected"]').each(function () {
+		if ($('p', this).attr('id')){
+			selected += $('p', this).attr('id') + " "
+		} else {
+			selected += $('img', this).attr('id') + " "
+		}
+		//console.log(selected);
+	});
+	
+	// Change the value of the selection div - this serves as a memory of selected files
+	$("#selection").attr('value', selected);
+	//console.log($("#selection").attr('value'));
+	
+	// Show the filenames of the selected elements. Multiple filenames are separated by a comma
+	$("#show_selection").attr('value', selected.split(" ").slice(0,-1));
+});
+
+});
+</script>
+
+{% endblock %}

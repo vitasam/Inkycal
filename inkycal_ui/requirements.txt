@@ -1,0 +1,4 @@
+Flask==1.1.2                   # webserver
+Flask-WTF==0.14.3              # webforms
+Flask-SQLAlchemy==2.4.4        # database
+Flask-Login==0.5.0             # login handling

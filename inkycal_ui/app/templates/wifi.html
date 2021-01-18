@@ -1,13 +1,8 @@
 {% extends "base.html" %}
-
-<!-- Main container -->
 {% block content %}
 
-<!-- Wrap everything in a container-->
-<div class="container">
-
 <!-- heading -->
-<h3>Raspberry Pi Wifi setup</h3>
+<h1 class="display-4">wpa_supplicant generator</h1>
 
 <!-- Instructions -->
 <div class="alert alert-primary" role="alert">
@@ -326,7 +321,7 @@
     <div class="card">
       <div class="card-body">
         <h5 class="card-title">Preview</h5>
-        <p class="card-text" id="wpa"></p>
+        <samp class="card-text" id="wpa"></samp>
       </div>
     </div>
 </div>
@@ -337,7 +332,6 @@
 </div>
 
 </form>
-</div>
 
 <script>
 $(document).ready(function(){
@@ -358,9 +352,9 @@ $(document).ready(function(){
         var password = ( $("#password").val() != null ) ? $("#password").val().trim() : "";
 
         var wpa = [
-        "country="+country,
+        "ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev",
         "update_config=1",
-        "ctrl_interface=/var/run/wpa_supplicant",
+        "country="+country,
         "network={",
         '    ssid="'+ssid+'"',
         ];
@@ -378,6 +372,7 @@ $(document).ready(function(){
         //console.log(wpa.join('\n'));
 
         document.getElementById("wpa").innerHTML = wpa.join("<br />").replaceAll('    ', '&nbsp;&nbsp;&nbsp;&nbsp;');
+
     });
 
     }).change();
@@ -385,7 +380,7 @@ $(document).ready(function(){
 
 <script>
 function getHTML(filename, id, mimeType) {
-var elHtml = document.getElementById(id).innerText;
+var elHtml  = document.getElementById(id).innerHTML.replaceAll("<br>", "\r\n").replaceAll('&nbsp;&nbsp;&nbsp;&nbsp;', '    ');
 if (navigator.msSaveBlob) {
   navigator.msSaveBlob(new Blob([elHtml], { type: mimeType + ';charset=utf-8;' }), filename);
 } else {

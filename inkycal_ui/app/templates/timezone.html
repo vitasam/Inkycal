@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="display-4">Set timezone</h1>
+
+<!-- Information -->
+<div class="alert alert-primary" role="alert">
+    <h4 class="alert-heading">Information</h4>
+    Change the system timezone
+</div>
+
+<form class="needs-validation" method="post" novalidate>
+{{ form.hidden_tag() }}
+
+<!-- change system timezone -->
+ <div class="form-row">
+
+    <div class="col">
+		<label for="continent">Continent</label>
+		<select class="form-control" id="continent" name="continent" onchange="javascript:this.form.submit()">
+
+		{% for continent in data['continents'] %}
+				{% if data['prev_continent'] == continent %}
+					<option selected value={{continent}}>{{continent}}</option>
+				{% else %}
+					<option value={{continent}}>{{continent}}</option>
+				{% endif %}
+		{% endfor %}
+		</select>
+    </div>
+
+    <div class="col">
+		<label for="country">Country</label>
+		<select class="form-control" id="country" name="country">
+		{% for country in data['countries'] %}
+				{% if data['prev_country'] == country %}
+					<option selected value={{country}}>{{country}}</option>
+				{% else %}
+					<option value={{country}}>{{country}}</option>
+				{% endif %}
+		{% endfor %}
+		</select>
+    </div>
+
+ </div>
+
+
+<br>
+ <div class="row">
+	<div class="col">
+	  <button class="btn btn-primary btn-lg btn-block" type="submit" >Confirm</button>
+	</div>
+</div>
+
+</form>
+
+{% endblock %}

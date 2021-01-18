@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 class="display-4">Inkycal cockpit</h1>
+
+<!-- Information -->
+<div class="alert alert-primary" role="alert">
+    <h4 class="alert-heading">Information</h4>
+    On this page, you can restart Inkycal, enable/disable autostart at boot and view log or error files.
+</div>
+
+<form class="needs-validation" method="post" novalidate>
+{{ form.hidden_tag() }}
+
+<!-- Show success message if Inykcal is running already -->
+<div class="alert alert-success" role="alert" id="run_success">Inkycal is running!</div>
+
+<!-- Show warning message if Inykcal is running already -->
+<div class="alert alert-warning" role="alert" id="run_fail">Inkycal stopped!</div>
+
+<!--Restart Inkycal -->
+<div class="form-group">
+	<label for="restart">Restart Inkycal, e.g. after updating the settings file.</label>
+	<button type="submit" class="btn btn-outline-primary btn-lg btn-block" id="restart">Restart Inkycal</button>
+</div>
+
+<!-- enable startup at boot -->
+<div class="form-group" id="start_block">
+	<label for="start">Start Inkycal and enable start at boot.</label>
+	<button type="submit" class="btn btn-outline-primary btn-lg btn-block" id="start">Start Inkycal</button>
+</div>
+
+<!-- disable startup at boot -->
+<div class="form-group" id="stop_block">
+	<label for="stop">Stop Inkycal and disable start at boot.</label>
+	<button type="submit" class="btn btn-outline-primary btn-lg btn-block" id="stop">Stop Inkycal</button>
+</div>
+
+<!--show settings file -->
+<div class="form-group">
+	<label for="show_settings">Show the current settings file.</label>
+	<button type="submit" class="btn btn-outline-primary btn-lg btn-block" id="show_settings">Show settings file</button>
+</div>
+
+<!-- show log file -->
+<div class="form-group">
+	<label for="show_log"> Show the last 100 lines of the most recent log file.</label>
+	<button type="submit" class="btn btn-outline-primary btn-lg btn-block" id="show_log">Show log file</button>
+</div>
+
+<!-- Clear log file -->
+<div class="form-group">
+	<label for="clear_log">Clear Inkycal log file</label>
+	<button type="submit" class="btn btn-outline-warning btn-lg btn-block" id="clear_log">Clear log</button>
+</div>
+
+<!-- show server log file -->
+<div class="form-group">
+	<label for="show_server_log"> Show the last 50 lines of the most recent server log file.</label>
+	<button type="submit" class="btn btn-outline-primary btn-lg btn-block" id="show_server_log">Show server log file</button>
+</div>
+
+<!-- A hidden div showing which command should be run -->
+<input type="text" class="d-none" id="pressed" name="pressed" value="" readonly>
+<br>
+
+<div class="form-group" id="logs">
+    <div class="card">
+      <div class="card-body">
+        <h5 class="card-title">File preview</h5>
+        <samp class="card-text" id="preview"></samp>
+      </div>
+    </div>
+</div>
+
+
+</form>
+
+<script>
+$(document).ready(function() {
+	var status = {{status}};
+
+	$('#logs').hide();
+
+	// If Inkycal is already running, hide the start at boot button
+	// If Inkycal is not running, hide the stop at boot button
+	//console.log( status );
+	if (status == 0) {
+		$('#stop_block').hide();
+		$('#run_success').hide();
+	} else {
+		$('#start_block').hide();
+		$('#run_fail').hide();
+	}
+
+	var data = {{data|safe}};
+
+
+	if ( data != 0 ){
+		//console.log(data);
+		$('#logs').show();
+		document.getElementById("preview").innerHTML = data.join("<br />").replaceAll('    ', '&nbsp;&nbsp;&nbsp;&nbsp;');
+	} else {
+		$('#logs').hide();
+		}
+
+    $("button").click(function(){
+		var id = $(this).attr('id');
+		//console.log(id);
+
+		$("#pressed").attr('value', id);
+    });
+});
+</script>
+
+{% endblock %}
