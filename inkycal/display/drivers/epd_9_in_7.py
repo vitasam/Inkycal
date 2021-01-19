@@ -23,8 +23,9 @@ class EPD:
 
     if exists(f'{driver_dir}IT8951.zip'):
       print('Additional steps are required to install drivers for 9.7" E-Paper. '
-            'Please run the following command in Terminal, then retry:\n'
-            f'bash {driver_dir}install.sh')
+            'Please run the following command in Terminal, then retry:\n\n'
+            f'cd {driver_dir}\n'
+            f'bash install.sh')
 
   def init(self):
     pass
