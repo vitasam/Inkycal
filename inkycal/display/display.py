@@ -1,14 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Inky-Calendar epaper functions
+Inkycal universal E-Paper driver file.
 Copyright by aceisace
 """
+import glob
+import multiprocessing
 from importlib import import_module
+
 from PIL import Image
 
 from inkycal.custom import top_level
-import glob
 
 class Display:
   """Display class for inkycal
@@ -100,6 +102,28 @@ class Display:
     print('Sending E-Paper to deep sleep...', end = '')
     epaper.sleep()
     print('Done')
+
+  def render_with_timeout(self, im_black, im_colour = None):
+    """Renders an image on the selected E-Paper display.
+    if timeout is crossed, terminate the  rendering process.
+    """
+
+    process = multiprocessing.Process(
+      target=self.render,
+      name="rendering_with_timeout",
+      args=(im_black,),
+      kwargs={'im_colour':im_colour})
+    process.start()
+    process.join(60)
+
+    if process.is_alive():
+        print("Rendering took too long (more than 60 seconds), aborted")
+        # Terminate rendering
+        process.terminate()
+        #process.kill()
+        process.join()
+
+
 
   def calibrate(self, cycles=3):
     """Calibrates the display to retain crisp colours
@@ -193,12 +217,12 @@ class Display:
 
   @classmethod
   def get_display_names(cls):
-    """Prints all supported E-Paper models.
+    """Get all supported E-Paper models.
 
     Fetches all filenames in driver folder and prints them on the console.
 
     Returns:
-      Printed version of all supported Displays.
+      List of all supported Displays.
 
     Use one of the models to intilialize the Display class in order to gain
     access to the E-Paper.
@@ -212,7 +236,9 @@ class Display:
     drivers = [i.split('/')[-1].split('.')[0] for i in drivers]
     drivers.remove('__init__')
     drivers.remove('epdconfig')
-    print(*drivers, sep='\n')
+    drivers.remove('epdconfig_12_in_48')
+    drivers.sort()
+    return drivers
 
 if __name__ == '__main__':
   print("Running Display class in standalone mode")
