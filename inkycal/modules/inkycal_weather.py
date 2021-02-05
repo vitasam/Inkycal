@@ -18,8 +18,7 @@ except ImportError:
   print('pyowm is not installed! Please install with:')
   print('pip3 install pyowm')
 
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class Weather(inkycal_module):
   """Weather class
@@ -106,7 +105,7 @@ class Weather(inkycal_module):
       fonts['weathericons-regular-webfont'], size = self.fontsize)
 
     # give an OK message
-    print(f"{filename} loaded")
+    print(f"{__name__} loaded")
 
 
   def generate_image(self):
@@ -519,4 +518,4 @@ class Weather(inkycal_module):
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone mode')
+  print('running module in standalone mode')

@@ -17,8 +17,7 @@ except ImportError:
   print('feedparser is not installed! Please install with:')
   print('pip3 install feedparser')
 
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class Feeds(inkycal_module):
   """RSS class
@@ -66,7 +65,7 @@ class Feeds(inkycal_module):
     self.shuffle_feeds = config["shuffle_feeds"]
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
   def _validate(self):
     """Validate module-specific parameters"""
@@ -154,4 +153,4 @@ class Feeds(inkycal_module):
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone/debug mode')
+  print('running module in standalone mode')

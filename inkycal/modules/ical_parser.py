@@ -31,9 +31,7 @@ except ModuleNotFoundError:
   print('icalendar library could not be found. Please install this with:')
   print('pip3 install icalendar')
 
-
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class iCalendar:
   """iCalendar parsing moudule for inkycal.
@@ -88,12 +86,12 @@ class iCalendar:
       for path in filepath:
         with open(path, mode='r') as ical_file:
           ical = (Calendar.from_ical(ical_file.read()))
-          self.icalendars += ical
+          self.icalendars.append(ical) ##
 
     elif isinstance(filepath, str):
       with open(filepath, mode='r') as ical_file:
         ical = (Calendar.from_ical(ical_file.read()))
-        self.icalendars += ical
+        self.icalendars.append(ical) ##
     else:
       raise Exception (f"Input: '{filepath}' is not a string or list!")
 
@@ -215,4 +213,4 @@ class iCalendar:
 
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone mode')
+  print('running module in standalone mode')

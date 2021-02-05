@@ -12,8 +12,7 @@ from inkycal.modules.ical_parser import iCalendar
 import calendar as cal
 import arrow
 
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class Agenda(inkycal_module):
   """Agenda class
@@ -83,7 +82,7 @@ class Agenda(inkycal_module):
     self.timezone = get_system_tz()
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
   def generate_image(self):
     """Generate image for this module"""
@@ -230,4 +229,4 @@ class Agenda(inkycal_module):
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone mode')
+  print('running module in standalone mode')

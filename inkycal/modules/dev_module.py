@@ -41,8 +41,7 @@ except ImportError:
 #############################################################################
 
 # Get the name of this file, set up logging for this filename
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 #############################################################################
 #                         Class setup
@@ -152,7 +151,7 @@ class Simple(inkycal_module):
     #-----------------------------------------------------------------------#
     # good example :)
     if config["hobbies"] and isinstance(config["hobbies"], str):
-      self.hobbies = config["age"].split(",")
+      self.hobbies = config["hobbies"].split(",")
       # split splits the string on each comma -> gives a list
       # even if a single value was entered, it will be converted to a list
     else:
@@ -160,7 +159,7 @@ class Simple(inkycal_module):
     #-----------------------------------------------------------------------#
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
 #############################################################################
 #                 Validation of module specific parameters   (optional)     #
@@ -223,7 +222,7 @@ class Simple(inkycal_module):
 
 
 if __name__ == '__main__':
-  print('running {0} in standalone mode'.format(filename))
+  print('running module in standalone mode')
 
 
 

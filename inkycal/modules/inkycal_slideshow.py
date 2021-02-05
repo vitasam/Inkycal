@@ -14,7 +14,7 @@ from inkycal.custom import *
 from inkycal.modules.inky_image import Inkyimage as Images
 
 filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class Slideshow(inkycal_module):
   """Cycles through images in a local image folder
@@ -80,7 +80,7 @@ class Slideshow(inkycal_module):
     self._first_run = True
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
   def generate_image(self):
     """Generate image for this module"""
@@ -131,4 +131,4 @@ class Slideshow(inkycal_module):
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone/debug mode')
+  print('running module in standalone mode')

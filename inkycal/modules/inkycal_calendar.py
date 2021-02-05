@@ -10,9 +10,7 @@ from inkycal.custom import *
 import calendar as cal
 import arrow
 
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
-
+logger = logging.getLogger(__name__)
 
 class Calendar(inkycal_module):
   """Calendar class
@@ -86,7 +84,7 @@ class Calendar(inkycal_module):
       fonts['NotoSans-SemiCondensed'], size = self.fontsize)
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
   def generate_image(self):
     """Generate image for this module"""
@@ -214,6 +212,10 @@ class Calendar(inkycal_module):
       if len(cal.monthcalendar(now.year, now.month)) == 5:
         events_height += icon_height
 
+      # If this month requires 4 instead of 6 rows, increase event section height
+      if len(cal.monthcalendar(now.year, now.month)) == 4:
+        events_height += icon_height*2
+
       # import the ical-parser
       from inkycal.modules.ical_parser import iCalendar
 
@@ -338,4 +340,4 @@ class Calendar(inkycal_module):
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone mode')
+  print('running module in standalone mode')

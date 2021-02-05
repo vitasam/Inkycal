@@ -11,7 +11,7 @@ from urllib.request import urlopen
 import os
 import time
 
-logs = logging.getLogger('inkycal_custom')
+logs = logging.getLogger(__name__)
 logs.setLevel(level=logging.INFO)
 
 # Get the path to the Inkycal folder
