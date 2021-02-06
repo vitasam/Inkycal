@@ -7,25 +7,18 @@ Copyright by aceisace
 """
 import logging
 from PIL import Image, ImageDraw, ImageFont, ImageColor
-from urllib.request import urlopen
 import os
 import time
+
+from inkycal.config import config
 
 logs = logging.getLogger(__name__)
 logs.setLevel(level=logging.INFO)
 
-# Get the path to the Inkycal folder
-top_level = os.path.dirname(
-  os.path.abspath(os.path.dirname(__file__))).split('/inkycal')[0]
-
-# Get path of 'fonts' and 'images' folders within Inkycal folder
-fonts_location = top_level + '/fonts/'
-images = top_level + '/images/'
-
 # Get available fonts within fonts folder
 fonts = {}
 
-for path,dirs,files in os.walk(fonts_location):
+for path,dirs,files in os.walk(config["FONT_DIR"]):
   for filename in files:
     if filename.endswith('.otf'):
       name = filename.split('.otf')[0]
@@ -56,53 +49,6 @@ def get_fonts():
   """
   for fonts in available_fonts:
     print(fonts)
-
-
-def get_system_tz():
-  """Gets the system-timezone
-
-  Gets the timezone set by the system.
-
-  Returns:
-    - A timezone if a system timezone was found.
-    - None if no timezone was found.
-
-  The extracted timezone can be used to show the local time instead of UTC. e.g.
-
-    >>> import arrow
-    >>> print(arrow.now()) # returns non-timezone-aware time
-    >>> print(arrow.now(tz=get_system_tz()) # prints timezone aware time.
-  """
-  try:
-    local_tz = time.tzname[1]
-  except:
-    print('System timezone could not be parsed!')
-    print('Please set timezone manually!. Setting timezone to None...')
-    local_tz = None
-  return local_tz
-
-
-def auto_fontsize(font, max_height):
-  """Scales a given font to 80% of max_height.
-
-    Gets the height of a font and scales it until 80% of the max_height
-    is filled.
-
-
-    Args:
-        - font: A PIL Font object.
-        - max_height: An integer representing the height to adjust the font to
-          which the given font should be scaled to.
-
-    Returns:
-        A PIL font object with modified height.
-    """
-
-  fontsize = font.getsize('hg')[1]
-  while font.getsize('hg')[1] <= (max_height * 0.80):
-    fontsize += 1
-    font = ImageFont.truetype(font.path, fontsize)
-  return font
 
 
 def write(image, xy, box_size, text, font=None, **kwargs):
@@ -229,30 +175,6 @@ def text_wrap(text, font=None, max_width = None):
         i += 1
       lines.append(line)
   return lines
-
-
-def internet_available():
-  """checks if the internet is available.
-
-  Attempts to connect to google.com with a timeout of 5 seconds to check
-  if the network can be reached.
-
-  Returns:
-    - True if connection could be established.
-    - False if the internet could not be reached.
-
-  Returned output can be used to add a check for internet availability:
-
-  >>> if internet_available() == True:
-  >>> #...do something that requires internet connectivity
-  """
-
-  try:
-    urlopen('https://google.com',timeout=5)
-    return True
-  except URLError as err:
-    return False
-
 
 def draw_border(image, xy, size, radius=5, thickness=1, shrinkage=(0.1,0.1)):
   """Draws a border at given coordinates.
