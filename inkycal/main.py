@@ -12,11 +12,11 @@ import arrow
 import time
 import json
 import logging
-from logging.handlers import RotatingFileHandler
 
 from inkycal.display import Display
-from inkycal.custom import *
+from inkycal.custom import functions
 from inkycal.modules.inky_image import Inkyimage as Images
+from inkycal.custom import get_system_tz
 
 try:
   from PIL import Image
@@ -39,41 +39,16 @@ except ImportError:
 # On the console, set a logger to show only important logs
 # (level ERROR or higher)
 stream_handler = logging.StreamHandler()
-stream_handler.setLevel(logging.ERROR)
 
-on_rtd = os.environ.get('READTHEDOCS') == 'True'
-if on_rtd:
-  logging.basicConfig(
-    level = logging.INFO,
-    format='%(asctime)s | %(name)s |  %(levelname)s: %(message)s',
-    datefmt='%d-%m-%Y %H:%M:%S',
-    handlers=[stream_handler])
-        
-else:
-  # Save all logs to a file, which contains more detailed output
-  logging.basicConfig(
-    level = logging.INFO,
-    format='%(asctime)s | %(name)s |  %(levelname)s: %(message)s',
-    datefmt='%d-%m-%Y %H:%M:%S',
-    handlers=[
+logging.basicConfig(
+  level = logging.ERROR,
+  format='%(asctime)s | %(name)s |  %(levelname)s: %(message)s',
+  datefmt='%d-%m-%Y %H:%M:%S',
+  handlers=[stream_handler])
 
-          stream_handler,                     # add stream handler from above
-
-          RotatingFileHandler(                # log to a file too
-            f'{top_level}/logs/inkycal.log',  # file to log
-            maxBytes=2097152,                 # 2MB max filesize
-            backupCount=5                     # create max 5 log files
-            )
-          ]
-    )
-
-# Show less logging for PIL module
 logging.getLogger("PIL").setLevel(logging.WARNING)
 
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
-
-# TODO: autostart -> supervisor?
+logger = logging.getLogger(__name__)
 
 class Inkycal:
   """Inkycal main class
@@ -153,10 +128,8 @@ class Inkycal:
         setup = f'self.module_{self._module_number} = {module_name}({module})'
         # print(setup)
         exec(setup)
-        logger.info(('name : {name} size : {width}x{height} px'.format(
-          name = module_name,
-          width = module['config']['size'][0],
-          height = module['config']['size'][1])))
+        width, height = module['config']['size']
+        logger.info(f'name : {module_name} size : {width}x{height} px')
 
         self._module_number += 1
 
@@ -229,7 +202,7 @@ class Inkycal:
         print('OK!')
       except Exception as Error:
         errors.append(number)
-        self.info += f"module {number}: Error!  "
+        self.info += f"img {number}: Error!  "
         print('Error!')
         print(traceback.format_exc())
 
@@ -279,12 +252,12 @@ class Inkycal:
           black,colour=module.generate_image()
           black.save(f"{self.image_folder}/module{number}_black.png", "PNG")
           colour.save(f"{self.image_folder}/module{number}_colour.png", "PNG")
-          self.info += f"module {number}: OK  "
+          self.info += f"img {number}: OK  "
         except Exception as Error:
           errors.append(number)
           print('error!')
           print(traceback.format_exc())
-          self.info += f"module {number}: error!  "
+          self.info += f"img {number}: error!  "
           logger.exception(f'Exception in module {number}')
 
       if errors:
@@ -670,4 +643,4 @@ class Inkycal:
     print(f"Your module '{filename}' with class '{classname}' was removed.")
 
 if __name__ == '__main__':
-  print(f'running inkycal main in standalone/debug mode')
+  print('running module in standalone mode')
