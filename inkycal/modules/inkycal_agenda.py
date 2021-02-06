@@ -12,6 +12,7 @@ from inkycal.modules.ical_parser import iCalendar
 import calendar as cal
 import arrow
 
+import logging
 logger = logging.getLogger(__name__)
 
 class Agenda(inkycal_module):

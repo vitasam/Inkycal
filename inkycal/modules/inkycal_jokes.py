@@ -11,10 +11,11 @@ from inkycal.modules.template import inkycal_module
 from inkycal.custom import *
 
 import requests
+
+import logging
+logger = logging.getLogger(__name__)
 # Show less logging for request module
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-
-logger = logging.getLogger(__name__)
 
 class Jokes(inkycal_module):
   """Icanhazdad-api class

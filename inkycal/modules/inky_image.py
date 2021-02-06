@@ -14,9 +14,7 @@ import requests
 import numpy
 import os
 import logging
-
-filename = os.path.basename(__file__).split('.py')[0]
-logger = logging.getLogger(filename)
+logger = logging.getLogger(__name__)
 
 class Inkyimage:
   """Custom Imge class written for commonly used image operations.
@@ -330,5 +328,5 @@ class Inkyimage:
 
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone/debug mode')
+  print('running module in standalone/debug mode')
 

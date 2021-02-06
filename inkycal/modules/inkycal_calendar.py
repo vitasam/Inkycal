@@ -10,6 +10,7 @@ from inkycal.custom import *
 import calendar as cal
 import arrow
 
+import logging
 logger = logging.getLogger(__name__)
 
 class Calendar(inkycal_module):

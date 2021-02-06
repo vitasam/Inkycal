@@ -41,6 +41,7 @@ except ImportError:
 #############################################################################
 
 # Get the name of this file, set up logging for this filename
+import logging
 logger = logging.getLogger(__name__)
 
 #############################################################################

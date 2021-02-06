@@ -14,6 +14,7 @@ from inkycal.custom import *
 
 from inkycal.modules.inky_image import Inkyimage as Images
 
+import logging
 logger = logging.getLogger(__name__)
 
 class Inkyserver(inkycal_module):
