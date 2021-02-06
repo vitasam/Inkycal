@@ -18,19 +18,13 @@ from .parser import load_settings
 from .timezone_helper import get_continents, get_countries, current_tz
 from .supported_displays import displays
 
-settings_path = app.config['SETTINGS_PATH']
-log_path = app.config['LOGGING_PATH']
-inkycal_runpath = app.config['INKYCAL_RUNPATH']
+from inkycal.config import config as inkycal_setup
+
+settings_path = inkycal_setup['SETTINGS_PATH']
+log_path = inkycal_setup['LOGGING_PATH']
+inkycal_runpath = inkycal_setup['INKYCAL_RUNFILE']
 
 modules_config = get_all_config()
-
-def validate_image(stream):
-    header = stream.read(512)
-    stream.seek(0)
-    format = imghdr.what(None, header)
-    if not format:
-        return None
-    return '.' + (format if format != 'jpeg' else 'jpg')
 
 # Home
 @app.route('/')
@@ -145,7 +139,7 @@ def inkycal_config():
         calibration_hour_3 = int(request.form.get('calibration_hour_3'))
         orientation: int(request.form.get('orientation'))
         language = request.form.get('language')
-        
+
         # if the info section checkbox is checked, it can be found in the form.get function
         info_section = True if request.form.get('info_section') else False
 
@@ -254,7 +248,7 @@ def inkycal_config():
         except:
             flash('Something unexpted happened when saving the settings file')
 
-    return render_template('inkycal-config2.html', title='Inkycal-Setup', conf=modules_config, form=form, 
+    return render_template('inkycal-config.html', title='Inkycal-Setup', conf=modules_config, form=form,
     current_config=current_config, supported_displays=displays)
 
 # Inkycal-setup
@@ -293,7 +287,7 @@ def control():
                     data = file.readlines()
             except FileNotFoundError:
                 flash('No settings file found')
-                
+
 
         elif pressed == "show_log":
             try:
@@ -309,7 +303,7 @@ def control():
                 flash(f'Cleared log file')
             else:
                 flash('Could not clear log file')
-                
+
         elif pressed == 'show_server_log':
             try:
                 with open(f'/var/log/apache2/error.log', mode='r') as file:
@@ -361,7 +355,7 @@ def test_display():
     form = GenericForm()
 
     if form.validate_on_submit():
-        test_im_path = "/home/pi/Inkycal/Gallery/coffee.png"
+        test_im_path = url_for('static', filename='images/coffee.png')
         model = request.form.get('model')
         size = Display.get_display_size(model)
         im = Image.open(test_im_path).rotate(90, expand=True).convert('RGBA')
@@ -383,19 +377,21 @@ def test_display():
 @app.route('/uploads', methods=['GET', 'POST'])
 def uploads():
     form = GenericForm()
-    
+
     # Get all files from upload directory
-    files = os.listdir(app.config['UPLOAD_PATH'])
-    
-    image_files = [img for img in files if img.split('.')[-1].lower() in ('jpg','png','jpeg')]
-    
-    icalendars = [ical for ical in files if ical.split('.')[-1].lower() == 'ics']
+    image_files = os.listdir(inkycal_setup['IMAGE_DIR'])
+    icalendar_files = os.listdir(inkycal_setup['ICAL_DIR'])
+    font_files = os.listdir(inkycal_setup['FONT_DIR'])
+
+    font_files = [font for font in font_files if font.split('.')[-1]
+                  in ("otf", "ttf")]
+
 
     # Create a dictionary mapping each image file with it's orientation -> horizontal, vertical
     # If the file is not an image, use None
     images = {}
     for im in image_files:
-        with Image.open(f"{app.config['UPLOAD_PATH']}/{im}") as img: 
+        with Image.open(f"{inkycal_setup['IMAGE_DIR']}/{im}") as img:
             size = img.size
         images[im] = 'horizontal' if size[0] > size[1] else 'vertical'
 
@@ -406,13 +402,20 @@ def uploads():
             selection.remove("")
 
             for files in selection:
-                filepath = f"{app.config['UPLOAD_PATH']}/{files}"
+                extension = files.split('.')[-1].lower()
+                if extension in ("jpeg", "png", "jpg"):
+                    filepath = f"{inkycal_setup['IMAGE_DIR']}/{files}"
+                elif extension == ".ics":
+                    filepath = f"{inkycal_setup['ICAL_DIR']}/{files}"
+                elif extension in ("ttf", "otf"):
+                    filepath = f"{inkycal_setup['FONT_DIR']}/{files}"
+                    
                 if os.path.exists(filepath):
                     os.remove(filepath)
                 else:
                     flash("some files could not be deleted")
-        
-        
+
+
         if 'file' in request.files:
             uploaded_files = request.files.getlist('file')
 
@@ -422,19 +425,27 @@ def uploads():
                     file_ext = os.path.splitext(filename)[1]
                     if file_ext.lower() not in app.config['UPLOAD_EXTENSIONS']:
                         return "Unsupported format", 400
-                    
-                    # problematic on Apple Camera roll
-                    # if file_ext != validate_image(uploaded_file.stream):
-                    #    return "Invalid file", 400
-                    uploaded_file.save(os.path.join(app.config['UPLOAD_PATH'], filename))
+                    else:
+                        if file_ext.lower() in (".png", ".jpeg", ".jpg"):
+                            uploaded_file.save(os.path.join(inkycal_setup['IMAGE_DIR'], filename))
+                        elif file_ext.lower() == ".ics":
+                            uploaded_file.save(os.path.join(inkycal_setup['ICAL_DIR'], filename))
+                        elif file_ext.lower() in (".ttf", ".otf"):
+                            uploaded_file.save(os.path.join(inkycal_setup['FONT_DIR'], filename))
 
         return redirect(url_for('uploads'))
 
-    return render_template('uploads.html', title='Inkycal uploader', form=form, images=images, icalendars=icalendars)
+    return render_template('uploads.html', title='Inkycal uploader', form=form, images=images, icalendars=icalendar_files, fonts=font_files)
 
 # Uploaded files viewer
 @login_required
-@app.route('/uploads/<filename>')
+@app.route('/upload/<filename>')
 def upload(filename):
-    return send_from_directory(app.config['UPLOAD_PATH'], filename)
+    extension = filename.split('.')[-1].lower()
+    if extension == "png" or "jpg" or "jpeg":
+        return send_from_directory(inkycal_setup['IMAGE_DIR'], filename)
+    elif extension == "ics":
+        return send_from_directory(inkycal_setup['ICAL_DIR'], filename)
+    elif extension in ("ttf", "otf"):
+        return send_from_directory(inkycal_setup['FONT_PATH'], filename)
 
