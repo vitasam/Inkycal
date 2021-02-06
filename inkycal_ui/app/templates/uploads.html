@@ -59,6 +59,20 @@
 <input id="show_selection" type="text" class="form-control" value="" readonly>
 </div>
 
+{% if fonts %}
+	<h4 class="text-center">Fonts</h4>
+{% endif %}
+
+<div class="row justify-content-center">
+{% for font in fonts %}
+
+	<div class="customdiv" style="background-color: white; display: flex;justify-content: center;height: 35px;width: 90%;border-radius: 10px;border:5px solid transparent">
+		<p id="{{font}}">{{ font }}</p>
+	</div>
+	<br><br>
+{% endfor %}
+</div><br>
+
 <script>
 function copy_to_clipboard() {
   /* Get the text field */
