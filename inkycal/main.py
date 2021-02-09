@@ -14,9 +14,9 @@ import json
 import logging
 
 from inkycal.display import Display
-from inkycal.custom import functions
+from inkycal.custom import write, get_system_tz
+from inkycal.config import config as inkycal_config
 from inkycal.modules.inky_image import Inkyimage as Images
-from inkycal.custom import get_system_tz
 
 try:
   from PIL import Image
@@ -83,20 +83,18 @@ class Inkycal:
           self.settings = settings
 
       except FileNotFoundError:
-        print('No settings file found in given path\n'
+        raise FileNotFoundError('No settings file found in given path\n'
               'Please double check your settings_path')
-        return
 
     else:
       try:
-        with open('/boot/settings.json') as settings_file:
+        with open(inkycal_config["SETTINGS_PATH"]) as settings_file:
           settings = json.load(settings_file)
           self.settings = settings
 
       except FileNotFoundError:
-        print('No settings file found in /boot')
-        return
-
+        raise FileNotFoundError('No settings file found in default path\n'
+              'Please double check your settings_path')
 
     # Option to use epaper image optimisation, reduces colours
     self.optimize = True
@@ -142,7 +140,7 @@ class Inkycal:
         print(str(e))
 
     # Path to store images
-    self.image_folder = top_level+'/images'
+    self.image_folder = inkycal_config["TEMP_DIR"]
 
     # Give an OK message
     print('loaded inkycal')
