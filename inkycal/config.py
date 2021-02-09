@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Configuration file for Inky-Calendar Project
+Configuration file for Inkycal Project
 Handles variables for both the web-ui and Inkycal core
 Do not change unless you know what you are doing.
 
