@@ -53,7 +53,7 @@ logger = logging.getLogger(__name__)
 
 class Simple(inkycal_module):
   """ Simple Class
-  Once sentence describing what this module does,
+  One sentence describing what this module does,
   e.g. Display hello world with your name!
   """
 
@@ -117,7 +117,7 @@ class Simple(inkycal_module):
     # remove this if your module has no required parameters
     for param in self.requires:
       if not param in config:
-        raise Exception('config is missing {}'.format(param))
+        raise Exception(f'config is missing {param}')
 
     # the web-UI removes any blank space from the input
     # It can only output strings or booleans, integers and lists need to be
@@ -187,11 +187,10 @@ class Simple(inkycal_module):
     im_width = int(self.width - (2 * self.padding_left))
     im_height = int(self.height - (2 * self.padding_top))
     im_size = im_width, im_height
-    logger.info('image size: {} x {} px'.format(im_width, im_height))
 
     # Use logger.info(), logger.debug(), logger.warning() to display
     # useful information for the developer
-    logger.info('image size: {} x {} px'.format(im_width, im_height))
+    logger.info(f'image size: {im_width} x {im_height} px')
 
     # Create an image for black pixels and one for coloured pixels (required)
     im_black = Image.new('RGB', size = im_size, color = 'white')
@@ -208,7 +207,7 @@ class Simple(inkycal_module):
     # - get_fonts()           -> see which fonts are available
     # - get_system_tz()       -> Get the system's current timezone
     # - auto_fontsize()       -> Scale the fontsize to the provided height
-    # - textwrap()            -> Split a paragraph into smaller lines
+    # - text_wrap()            -> Split a paragraph into smaller lines
     # - internet_available()  -> Check if internet is available
     # - draw_border()         -> Draw a border around the specified area
 

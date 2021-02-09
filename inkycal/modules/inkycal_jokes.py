@@ -2,17 +2,19 @@
 # -*- coding: utf-8 -*-
 
 """
-iCanHazDadJoke module for InkyCal Project
+iCanHazDadJoke module for Inkycal Project
 Special thanks to Erik Fredericks (@efredericks) for the template!
 
 Copyright by aceisace
 """
-from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
-
+import logging
 import requests
 
-import logging
+from inkycal.modules.template import inkycal_module
+from inkycal.custom import write, internet_available, text_wrap
+
+from PIL import Image
+
 logger = logging.getLogger(__name__)
 # Show less logging for request module
 logging.getLogger("urllib3").setLevel(logging.WARNING)

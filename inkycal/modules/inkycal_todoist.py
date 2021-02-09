@@ -1,13 +1,15 @@
 #!/usr/bin/python3
-# -*- coding: utf-8 -*-
-
+# -*- coding: utf-8 -*
 """
-todoist module for Inky-Calendar Project
+Todoist module for Inkycal Project
 Copyright by aceisace
 """
+import logging
 
 from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
+from inkycal.custom import write, internet_available
+
+from PIL import Image
 
 try:
   import todoist
@@ -15,7 +17,6 @@ except ImportError:
   print('todoist is not installed! Please install with:')
   print('pip3 install todoist-python')
 
-import logging
 logger = logging.getLogger(__name__)
 
 class Todoist(inkycal_module):
@@ -63,7 +64,7 @@ class Todoist(inkycal_module):
     self._api.sync()
 
     # give an OK message
-    print(f'{filename} loaded')
+    print(f'{__name__} loaded')
 
   def _validate(self):
     """Validate module-specific parameters"""
@@ -197,4 +198,4 @@ class Todoist(inkycal_module):
     return im_black, im_colour
 
 if __name__ == '__main__':
-  print(f'running {filename} in standalone/debug mode')
+  print('running module in standalone/debug mode')

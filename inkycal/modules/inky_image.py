@@ -27,7 +27,7 @@ class Inkyimage:
     self.image = image
 
     # give an OK message
-    logger.info(f'{filename} loaded')
+    logger.info(f'{__name__} loaded')
 
   def load(self, path):
     """loads an image from a URL or filepath.

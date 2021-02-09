@@ -1,16 +1,18 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Weather module for Inky-Calendar software.
+Weather module for InkyCal software.
 Copyright by aceisace
 """
+import arrow
+import logging
+import math, decimal
+from locale import getdefaultlocale as sys_locale
+
+from PIL import Image, ImageFont, ImageDraw
 
 from inkycal.modules.template import inkycal_module
 from inkycal.custom import *
-
-import math, decimal
-import arrow
-from locale import getdefaultlocale as sys_locale
 
 try:
   from pyowm.owm import OWM
@@ -18,7 +20,6 @@ except ImportError:
   print('pyowm is not installed! Please install with:')
   print('pip3 install pyowm')
 
-import logging
 logger = logging.getLogger(__name__)
 
 class Weather(inkycal_module):
@@ -103,7 +104,7 @@ class Weather(inkycal_module):
     self.timezone = get_system_tz()
     self.locale = config['language']
     self.weatherfont = ImageFont.truetype(
-      fonts['weathericons-regular-webfont'], size = self.fontsize)
+      load_external('weathericons-regular-webfont.ttf'), size = self.fontsize)
 
     # give an OK message
     print(f"{__name__} loaded")

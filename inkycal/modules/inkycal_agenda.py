@@ -1,19 +1,22 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Agenda module for Inky-Calendar Project
+Agenda module for Inkycal Project
 Copyright by aceisace
 """
+import arrow
+import logging
+import calendar as cal
 
 from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
+from inkycal.custom import write, get_system_tz
 from inkycal.modules.ical_parser import iCalendar
 
-import calendar as cal
-import arrow
+from PIL import Image, ImageDraw
 
-import logging
 logger = logging.getLogger(__name__)
+
+# TODO: optional parameter to show end time of events
 
 class Agenda(inkycal_module):
   """Agenda class
@@ -24,25 +27,28 @@ class Agenda(inkycal_module):
 
   requires = {
     "ical_urls" : {
-      "label":"iCalendar URL/s, separate multiple ones with a comma",
+      "label":"iCalendar URL/s, separate multiple ones with a comma. Usually thse URLs end"
+              " with .ics"
       },
 
     }
 
   optional = {
     "ical_files" : {
-      "label":"iCalendar filepaths, separated with a comma",
+      "label":"Filename of iCalendars in iCalendar folder, e.g. myical.ics. " 
+              "You can separate multiple ones with a comma, e.g. ical2.ics, ical2.ics."
       },
 
     "date_format":{
       "label":"Use an arrow-supported token for custom date formatting "+
-      "see https://arrow.readthedocs.io/en/stable/#supported-tokens, e.g. ddd D MMM",
+              "see https://arrow.readthedocs.io/en/stable/#supported-tokens, e.g. ddd D MMM",
       "default": "ddd D MMM",
       },
 
     "time_format":{
-      "label":"Use an arrow-supported token for custom time formatting "+
-      "see https://arrow.readthedocs.io/en/stable/#supported-tokens, e.g. HH:mm",
+      "label":"Use an arrow-supported token for custom time formatting "
+              "see https://arrow.readthedocs.io/en/stable/#supported-tokens, e.g. HH:mm. "
+              "For 12-hour format, use hh:mm.",
       "default":"HH:mm",
       },
 

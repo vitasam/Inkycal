@@ -12,12 +12,12 @@ Copyright by aceisace
 • Only non-all_day events or multi-day need to be converted to
   local timezone. Converting all-day events to local timezone is a problem!
 """
-
-import arrow
-from urllib.request import urlopen
-import logging
-import time
 import os
+import time
+import arrow
+import logging
+from urllib.request import urlopen
+from inkycal.config import config as inkycal_config
 
 try:
   import recurring_ical_events
@@ -77,21 +77,21 @@ class iCalendar:
     if ical: self.icalendars += ical
     logger.info('loaded iCalendars from URLs')
 
-  def load_from_file(self, filepath):
-    """Input a string or list of strings containing valid iCalendar filepaths
-    example: 'path1' (single file) OR ['path1', 'path2'] (multiple files)
+  def load_from_file(self, filename):
+    """Input a string or list of strings containing valid iCalendar filenames
+    example: 'file1.ics' (single file) OR ['file1.ics', 'file2.ics'] (multiple files)
     returns a list of iCalendars as string (raw)
     """
-    if isinstance(filepath, list):
-      for path in filepath:
-        with open(path, mode='r') as ical_file:
+    if isinstance(filename, list):
+      for path in filename:
+        with open(inkycal_config["ICAL_DIR"]+path, mode='r') as ical_file:
           ical = (Calendar.from_ical(ical_file.read()))
-          self.icalendars.append(ical) ##
+          self.icalendars.append(ical)
 
-    elif isinstance(filepath, str):
-      with open(filepath, mode='r') as ical_file:
+    elif isinstance(filename, str):
+      with open(inkycal_config["ICAL_DIR"]+filename, mode='r') as ical_file:
         ical = (Calendar.from_ical(ical_file.read()))
-        self.icalendars.append(ical) ##
+        self.icalendars.append(ical)
     else:
       raise Exception (f"Input: '{filepath}' is not a string or list!")
 

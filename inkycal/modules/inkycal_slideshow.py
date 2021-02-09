@@ -1,38 +1,35 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 """
-Image module for Inkycal Project
+Slideshow module for Inkycal Project
 Copyright by aceisace
 """
-import glob
+import logging
+from os import listdir
 
+from inkycal.config import config as inkycal_config
 from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
+
+# from inkycal.custom import *
 
 # PIL has a class named Image, use alias for Inkyimage -> Images
 from inkycal.modules.inky_image import Inkyimage as Images
 
-import logging
 logger = logging.getLogger(__name__)
 
 class Slideshow(inkycal_module):
-  """Cycles through images in a local image folder
+  """Cycles through images in the image folder.
+  
+  As this module relies on external content, the path it uses is
+  looked up from the config file.
   """
-  name = "Slideshow - cycle through images from a local folder"
+  name = "Slideshow - Cycle through images in the image folder"
 
   requires = {
-    
-    "path":{
-      "label":"Path to a local folder, e.g. /home/pi/Desktop/images. "
-              "Only PNG and JPG/JPEG images are used for the slideshow."
-      },
-
     "palette": {
       "label":"Which palette should be used for converting images?",
       "options": ["bw", "bwr", "bwy"]
       }
-
     }
 
   optional = {
@@ -61,20 +58,17 @@ class Slideshow(inkycal_module):
         raise Exception(f'config is missing {param}')
 
     # optional parameters
-    self.path = config['path']
     self.palette = config['palette']
     self.autoflip = config['autoflip']
     self.orientation = config['orientation']
 
     # Get the full path of all png/jpg/jpeg images in the given folder
-    all_files = glob.glob(f'{self.path}/*')
-    self.images = [i for i in all_files
-                  if i.split('.')[-1].lower() in ('jpg', 'jpeg', 'png')]
+    self.images = [f'{inkycal_config["IMAGE_DIR"]}{im}' for im in listdir(inkycal_config["IMAGE_DIR"])]
 
     if not self.images:
       logger.error('No images found in the given folder, please '
                    'double check your path!')
-      raise Exception('No images found in the given folder path :/')
+      raise FileNotFoundError('No images found in the given folder path :/')
 
     # set a 'first run' signal
     self._first_run = True

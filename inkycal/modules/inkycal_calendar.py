@@ -4,14 +4,18 @@
 Calendar module for Inky-Calendar Project
 Copyright by aceisace
 """
+import arrow
+import logging
+import calendar as cal
+
 from inkycal.modules.template import inkycal_module
 from inkycal.custom import *
 
-import calendar as cal
-import arrow
+from PIL import Image, ImageFont, ImageDraw
 
-import logging
 logger = logging.getLogger(__name__)
+
+#TODO: test font rendering of Roboto and Caviar Dreams
 
 class Calendar(inkycal_module):
   """Calendar class
@@ -39,7 +43,8 @@ class Calendar(inkycal_module):
       },
 
     "ical_files" : {
-      "label":"iCalendar filepaths, separated with a comma",
+      "label":"filenames of iCalendar files in iCalendar folder, e.g. "
+              "myical.ics. Separate multiple ones with a comma."
       },
 
     "date_format":{
@@ -82,7 +87,8 @@ class Calendar(inkycal_module):
     # additional configuration
     self.timezone = get_system_tz()
     self.num_font = ImageFont.truetype(
-      fonts['NotoSans-SemiCondensed'], size = self.fontsize)
+      load_external('Roboto-Thin.ttf'), size = self.fontsize)
+      #load_external('NotoSans-SemiCondensed.ttf'), size = self.fontsize)
 
     # give an OK message
     print(f'{__name__} loaded')

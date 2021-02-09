@@ -1,30 +1,25 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 """
 Image module for Inkycal Project
 Copyright by aceisace
 """
-
+import logging
 from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
-
 from inkycal.modules.inky_image import Inkyimage as Images
 
-import logging
 logger = logging.getLogger(__name__)
 
 class Inkyimage(inkycal_module):
-  """Displays an image from URL or local path
-  """
+  """Displays an image from URL or local path"""
 
-  name = "Inkycal Image - show an image from a URL or local path"
+  name = "Inkycal Image - show an image from a URL or filename in image folder"
 
   requires = {
     
     "path":{
-      "label":"Path to a local folder, e.g. /home/pi/Desktop/images. "
-              "Only PNG and JPG/JPEG images are used for the slideshow."
+      "label":"URL e.g. https://inkycal.readthedocs.io/en/main/_images/logo.png or "
+              "if the file is in the image folder, just the full filename, e.g. pikachu.png"
       },
 
     "palette": {

@@ -6,24 +6,24 @@ Feeds module for InkyCal Project
 Copyright by aceisace
 """
 import re
+import logging
+from random import shuffle
 
 from inkycal.modules.template import inkycal_module
-from inkycal.custom import *
+from inkycal.custom import write, internet_available, text_wrap
 
-from random import shuffle
+from PIL import Image
+
 try:
   import feedparser
 except ImportError:
   print('feedparser is not installed! Please install with:')
   print('pip3 install feedparser')
 
-import logging
 logger = logging.getLogger(__name__)
 
 class Feeds(inkycal_module):
-  """RSS class
-  parses rss/atom feeds from given urls
-  """
+  """Parses rss/atom feeds from given urls"""
 
   name = "RSS / Atom - Display feeds from given RSS/ATOM feeds"
 
