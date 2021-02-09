@@ -1,5 +1,17 @@
+#!/usr/bin/python3
+# -*- coding: utf-8 -*-
+"""
+Inkycal module template
+
+All inkycal modules inherit this template
+Do not change unless you know what you are doing
+Any change here will be reflected on all modules!
+
+Copyright by aceisace
+"""
 import abc
-from inkycal.custom import *
+from inkycal.custom import load_external
+from PIL import ImageFont
 
 class inkycal_module(metaclass=abc.ABCMeta):
   """Generic base class for inkycal modules"""
@@ -23,7 +35,7 @@ class inkycal_module(metaclass=abc.ABCMeta):
 
     self.fontsize = conf["fontsize"]
     self.font = ImageFont.truetype(
-      fonts['NotoSansUI-Regular'], size = self.fontsize)
+      load_external('NotoSansUI-Regular.ttf'), size = self.fontsize)
 
   def set(self, help=False, **kwargs):
     """Set attributes of class, e.g. class.set(key=value)
@@ -87,3 +99,17 @@ class inkycal_module(metaclass=abc.ABCMeta):
     except:
       raise Exception(
         'Ohoh, something went wrong while trying to get the config of this module')
+
+  def preview(self):
+    """Shows the generated image of this module.
+
+    Merges the two images of this module in a single one, then previews the
+    merged image. Useful when developing modules or debugging.
+    Only works on Raspberry Pi OS.
+    """
+    from inkycal.modules.inky_image import Inkyimage
+    preview =  Inkyimage.preview
+    merge = Inkyimage.merge
+    im_black, im_colour = self.generate_image()
+    preview(merge(im_black, im_colour))
+    
