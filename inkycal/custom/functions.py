@@ -1,55 +1,24 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 """
-Inky-Calendar custom-functions for ease-of-use
+Inkycal custom functions
+Use these in all modules by using:
+from inykcal.custom import *
+or
+from inkycal.custom import write, textwrap, draw_border
+
+Contains write function for more controlled writing on the image
+Contains text_wrap function for splitting a long string to smaller chunks
+Contains draw_border function for drawing a border around a specified area
 
 Copyright by aceisace
 """
 import logging
-from PIL import Image, ImageDraw, ImageFont, ImageColor
-import os
-import time
-
+from PIL import Image, ImageDraw, ImageFont
 from inkycal.config import config
 
-logs = logging.getLogger(__name__)
-logs.setLevel(level=logging.INFO)
-
-# Get available fonts within fonts folder
-fonts = {}
-
-for path,dirs,files in os.walk(config["FONT_DIR"]):
-  for filename in files:
-    if filename.endswith('.otf'):
-      name = filename.split('.otf')[0]
-      fonts[name] = os.path.join(path, filename)
-
-    if filename.endswith('.ttf'):
-      name = filename.split('.ttf')[0]
-      fonts[name] = os.path.join(path, filename)
-
-available_fonts = [key for key,values in fonts.items()]
-
-def get_fonts():
-  """Print all available fonts by name.
-
-  Searches the /font folder in Inkycal and displays all fonts found in
-  there.
-
-  Returns:
-    printed output of all available fonts. To access a fontfile, use the
-    fonts dictionary to access it.
-
-    >>> fonts['fontname']
-
-  To use a font, use the following sytax, where fontname is one of the
-  printed fonts of this function:
-
-  >>> ImageFont.truetype(fonts['fontname'], size = 10)
-  """
-  for fonts in available_fonts:
-    print(fonts)
-
+logger = logging.getLogger(__name__)
+logger.setLevel(level=logging.INFO)
 
 def write(image, xy, box_size, text, font=None, **kwargs):
   """Writes text on a image.
@@ -82,7 +51,7 @@ def write(image, xy, box_size, text, font=None, **kwargs):
   # Validate kwargs
   for key, value in kwargs.items():
     if key not in allowed_kwargs:
-      print('{0} does not exist'.format(key))
+      print(f'{key} does not exist')
 
   # Set kwargs if given, it not, use defaults
   alignment = kwargs['alignment'] if 'alignment' in kwargs else 'center'
@@ -111,11 +80,11 @@ def write(image, xy, box_size, text, font=None, **kwargs):
 
   # Truncate text if text is too long so it can fit inside the box
   if (text_width, text_height) > (box_width, box_height):
-    logs.debug(('truncating {}'.format(text)))
+    logger.debug(f'truncating {text}')
     while (text_width, text_height) > (box_width, box_height):
       text=text[0:-1]
       text_width, text_height = font.getsize(text)[0], font.getsize('hg')[1]
-    logs.debug((text))
+    logger.debug((text))
 
   # Align text to desired position
   if alignment == "center" or None:
@@ -130,8 +99,9 @@ def write(image, xy, box_size, text, font=None, **kwargs):
   # Draw the text in the text-box
   draw  = ImageDraw.Draw(image)
   space = Image.new('RGBA', (box_width, box_height))
-  ImageDraw.Draw(space).text((x, y), text, fill=colour, font=font)
-
+  draw2 = ImageDraw.Draw(space)
+  draw2.fontmode = "1"
+  draw2.text((x, y), text, fill=colour, font=font)
   # Uncomment following two lines, comment out above two lines to show
   # red text-box with white text (debugging purposes)
 
