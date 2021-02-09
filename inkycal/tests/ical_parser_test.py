@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 """
 iCalendar parser test (ical_parser)
 Copyright by aceisace
@@ -13,7 +12,9 @@ from urllib.request import urlopen
 
 from inkycal.modules.ical_parser import iCalendar
 from helper_functions import *
+from inkycal.custom import load_external
 
+from inkycal.config import config as inkycal_config
 
 ical = iCalendar()
 test_ical = 'https://calendar.google.com/calendar/ical/en.usa%23holiday%40group.v.calendar.google.com/public/basic.ics'
@@ -43,11 +44,12 @@ class ical_parser_test(unittest.TestCase):
   def test_laod_from_file(self):
     print('testing loading from file...', end="")
     dummy = str(urlopen(test_ical).read().decode())
-    with open('dummy.ical', mode="w") as file:
+    temp_path = inkycal_config["ICAL_DIR"]+'dummy.ics'
+    with open(temp_path, mode="w") as file:
       file.write(dummy)
-    ical.load_from_file('dummy.ical')
+    ical.load_from_file("dummy.ics")
     print('OK')
-    os.remove('dummy.ical')
+    os.remove(temp_path)
 
 if __name__ == '__main__':
 

@@ -8,21 +8,20 @@ Copyright by aceisace
 
 import unittest
 from inkycal.modules import Slideshow as Module
-from inkycal.custom import top_level
+from inkycal.config import config as inkycal_config
 from helper_functions import *
 environment = get_environment()
 
 # Set to True to preview images. Only works on Raspberry Pi OS with Desktop
 use_preview = False
 
-test_path = f'{top_level}/Gallery'
+test_path = f'{inkycal_config["IMAGE_DIR"]}'
 
 tests = [
 {
   "name": "Slideshow",
   "config": {
     "size": [400,200],
-    "path": test_path,
     "palette": "bwy",
     "autoflip": True,
     "orientation": "vertical",
@@ -33,7 +32,6 @@ tests = [
   "name": "Slideshow",
   "config": {
     "size": [800,500],
-    "path": test_path,
     "palette": "bw",
     "autoflip": True,
     "orientation": "vertical",
@@ -44,7 +42,6 @@ tests = [
   "name": "Slideshow",
   "config": {
     "size": [400,100],
-    "path": test_path,
     "palette": "bwr",
     "autoflip": False,
     "orientation": "vertical",
@@ -55,7 +52,6 @@ tests = [
   "name": "Slideshow",
   "config": {
     "size": [400,100],
-    "path": test_path,
     "palette": "bwy",
     "autoflip": True,
     "orientation": "vertical",
@@ -66,7 +62,6 @@ tests = [
   "name": "Slideshow",
   "config": {
     "size": [400,100],
-    "path": test_path,
     "palette": "bwy",
     "autoflip": True,
     "orientation": "horizontal",
@@ -89,7 +84,6 @@ tests = [
   "name": "Slideshow",
   "config": {
     "size": [500, 800],
-    "path": test_path,
     "palette": "bwr",
     "autoflip": True,
     "orientation": "vertical",

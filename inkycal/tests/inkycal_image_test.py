@@ -8,7 +8,7 @@ Copyright by aceisace
 
 import unittest
 from inkycal.modules import Inkyimage as Module
-from inkycal.custom import top_level
+from inkycal.config import config as inkycal_config
 from helper_functions import *
 environment = get_environment()
 
@@ -16,7 +16,7 @@ environment = get_environment()
 use_preview = False
 
 
-test_path = f'{top_level}/Gallery/coffee.png'
+test_path = f'{inkycal_config["IMAGE_DIR"]}test.png'
 
 tests = [
 {
