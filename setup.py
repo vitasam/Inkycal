@@ -6,24 +6,23 @@ with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
 __project__ = "inkycal"
-__version__ = "2.0.0"
+__version__ = "2.0.1"
 __description__ = "Inkycal is a python3 software for syncing icalendar events, weather and news on selected E-Paper displays"
 __packages__ = ["inkycal"]
 __author__ = "aceisace"
 __author_email__ = "aceisace63@yahoo.com"
 __url__ = "https://github.com/aceisace/Inkycal"
 
-__install_requires__ = ['pyowm==3.1.1',                   # weather
-                        'Pillow>=7.1.1' ,                 # imaging
+__install_requires__ = ['Pillow>=7.1.1',                  # Images
+                        'arrow>=0.15.6',                  # Time handling
                         'icalendar==4.0.6',               # iCalendar parsing
-                        'recurring-ical-events==0.1.17b0',# parse recurring events
-                        'feedparser==5.2.1',              # RSS-feeds
-                        # 'numpy>=1.18.2',                  # image pre-processing -> removed for issues with rpi os
-                        'arrow>=0.15.6',                  # time handling
-                        'Flask==1.1.2',                   # webserver
-                        'Flask-WTF==0.14.3',              # webforms
-                        'todoist-python==8.1.2',          # todoist api
-                        'yfinance==0.1.55',               # yahoo stocks
+                        'recurring-ical-events==0.1.17b0',# Agenda/Calendar module
+                        'pyowm==3.1.1',                   # Weather module
+                        'feedparser==5.2.1',              # Feeds module
+                        'todoist-python==8.1.2',          # Todoist module
+                        'yfinance==0.1.55',               # Stocks stocks
+                        'matplotlib==3.3.4',              # Stocks module
+                        #'numpy>=1.18.2',                  # image pre-processing -> removed for issues with rpi os
                         ]
 
 __classifiers__ = [
