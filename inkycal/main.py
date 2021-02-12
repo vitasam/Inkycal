@@ -1,17 +1,16 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
-
 """
 Main class for inkycal Project
 Copyright by aceisace
 """
 
 import os
-import traceback
-import arrow
-import time
 import json
+import time
+import arrow
 import logging
+import traceback
 
 from inkycal.display import Display
 from inkycal.custom import write, get_system_tz
@@ -68,7 +67,7 @@ class Inkycal:
   def __init__(self, settings_path=None, render=True):
     """Initialise Inkycal"""
 
-    self._release = '2.0.0'
+    self._release = '2.0.1'
 
     # Check if render was set correctly
     if render not in [True, False]:
@@ -358,8 +357,7 @@ class Inkycal:
         im1_size = im1.size
 
         # Get the size of the section
-        section_size = [i for i in self.settings['modules'] if \
-                        i['position'] == number][0]['config']['size']
+        section_size = self.settings['modules'][number-1]['config']['size']
 
         # Calculate coordinates to center the image
         x = int( (section_size[0] - im1_size[0]) /2)
@@ -384,8 +382,7 @@ class Inkycal:
         im2_size = im2.size
 
         # Get the size of the section
-        section_size = [i for i in self.settings['modules'] if \
-                        i['position'] == number][0]['config']['size']
+        section_size = self.settings['modules'][number-1]['config']['size']
 
         # Calculate coordinates to center the image
         x = int( (section_size[0]-im2_size[0]) /2)
@@ -421,8 +418,8 @@ class Inkycal:
       im_black = self._optimize_im(im_black)
       im_colour = self._optimize_im(im_colour)
 
-    im_black.save(self.image_folder+'/canvas.png', 'PNG')
-    im_colour.save(self.image_folder+'/canvas_colour.png', 'PNG')
+    im_black.save(self.image_folder+'canvas.png', 'PNG')
+    im_colour.save(self.image_folder+'canvas_colour.png', 'PNG')
 
   def _optimize_im(self, image, threshold=220):
     """Optimize the image for rendering on ePaper displays"""
