@@ -11,6 +11,7 @@ import calendar as cal
 import arrow
 from inkycal.modules.template import inkycal_module
 from inkycal.custom import *
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -62,6 +63,15 @@ class Calendar(inkycal_module):
         self._upcoming_events = None
         self._days_with_events = None
 
+        self.show_btc = config.get('show_btc_price_at_month_name', False)
+        logger.info('Show BTC price at Month name: %s', self.show_btc)
+
+        self.currency_name = config.get('btc_price_currency', 'EUR')
+        logger.info('Show BTC price with currency: %s', self.currency_name)
+
+        self.coinprice_url = config.get('coin_price_url', None)
+        logger.debug('coinprice_url: %s', self.coinprice_url)
+
         # optional parameters
         self.weekstart = config['week_starts_on']
         self.show_events = config['show_events']
@@ -87,6 +97,21 @@ class Calendar(inkycal_module):
 
         # give an OK message
         print(f'{__name__} loaded')
+
+    def get_btc_price(self, currency_name='EUR') -> str:
+        if self.coinprice_url is None:
+            return ''
+        response = requests.get(self.coinprice_url)
+        data = response.json()
+        if 'EUR' in currency_name:
+            price_str = (data['bpi']['EUR']['rate']).replace(',', '')
+            currency = price_str.split('.')
+            ret_string = '; BTC: ' + currency[0] + '€'
+        elif 'USD' in currency_name:
+            price_str = (data['bpi']['USD']['rate']).replace(',', '')
+            currency = price_str.split('.')
+            ret_string = '; BTC: $' + currency[0]
+        return ret_string
 
     @staticmethod
     def flatten(values):
@@ -166,11 +191,17 @@ class Calendar(inkycal_module):
             weekstart = now.shift(days=-now.isoweekday())
 
         # Write the name of current month
+        month_name = str(now.format('MMMM', locale=self.language))
+        if self.show_btc:
+            month_name = month_name + self.get_btc_price(
+                currency_name=self.currency_name
+            )
+
         write(
             im_black,
             (0, 0),
             (im_width, month_name_height),
-            str(now.format('MMMM', locale=self.language)),
+            month_name,
             font=self.font,
             autofit=True,
         )
