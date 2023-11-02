@@ -17,6 +17,10 @@
 
 Inkycal is a software written in python for selected E-Paper displays. It converts these displays into useful information dashboards. It's open-source, free for personal use, fully modular and user-friendly. Despite all this, Inkycal can run well even on the Raspberry Pi Zero. Oh, and it's open for third-party modules! Hooray!
 
+## ⚠️ Important info about debian bookworm
+Starting october 2023, Raspberry Pi OS is now based on Debian bookworm. At this moment in time, there are several projects expierencing compatability issues because of this change, including Inkycal. Please either use the last [compatible version of Raspberry Pi OS](https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2023-05-03/2023-05-03-raspios-bullseye-armhf-lite.img.xz) or get a ready-to-flash tested OS image (aka. Inkycal OS Lite) with Inkycal pre-installed when sponsoring this project. Please hold on until a fix has been found, tested and is published.
+
+
 ## Main features
 Inkycal is fully modular, you can mix and match any modules you like and configure them on the web-ui. For now, these following built-in modules are supported:
 * Calendar - Monthly Calendar with option to sync events from iCalendars, e.g. Google.
@@ -30,8 +34,13 @@ Inkycal is fully modular, you can mix and match any modules you like and configu
 * iCanHazDad - Display a random joke from [iCanHazDad.com](iCanhazdad.com).
 
 
+## Quickstart
+Watch the one-minute video on getting started with Inkycal:
+
+[![Inkycal quickstart](https://img.youtube.com/vi/IiIv_nWE5KI/0.jpg)](https://www.youtube.com/watch?v=IiIv_nWE5KI)
+
 ## Hardware guide
-Before you can start, please ensure you have one of the supported displays and of the supported Raspberry Pi: `|4|3A|3B|3B+|0W|0WH|`. We personally recommend the Raspberry Pi Zero W as this is relatively cheaper, uses less power and is perfect to fit in a small photo frame once you have assembled everything.
+Before you can start, please ensure you have one of the supported displays and of the supported Raspberry Pi: `|4|3A|3B|3B+|2B|0W|0WH|02W|`. We personally recommend the Raspberry Pi Zero W as this is relatively cheaper, uses less power and is perfect to fit in a small photo frame once you have assembled everything.
 
 **Serial** displays are usually cheaper, but slower. Their main advantage is ease of use, like being able to communicate via SPI. A single update will cause flickering (fully normal on e-paper displays) ranging from a few seconds to half an minute. We recommend these for users who want to get started quickly and for more compact setups, e.g. fitting inside a photo frame. The resolution of these displays ranges from low to medium. Usually, these displays support 2-3 colours, but no colours in between, e.g. fully black, fully red/yellow and fully-white.
 
@@ -55,35 +64,54 @@ Before you can start, please ensure you have one of the supported displays and o
 | Raspberry Pi Zero W | Raspberry Pi | <a target="_blank" href="https://www.amazon.de/gp/search?ie=UTF8&tag=aceisace-21&linkCode=ur2&linkId=8f9c223197e1ab91b0372b1fe56ed508&camp=1638&creative=6742&index=computers&keywords=Raspberry Pi Zero W">Raspberry Pi Zero W</a> |
 | MicroSD card | Sandisk | <a target="_blank" href="https://www.amazon.de/gp/search?ie=UTF8&tag=aceisace-21&linkCode=ur2&linkId=530a2b371c40bfeca48e875fb735a4a1&camp=1638&creative=6742&index=computers&keywords=Sandisk microSD 16GB U1 A1">MicroSD card (8GB)</a> |
 
-## Important note for Raspberry Pi OS!
-Please note that with the latest version of Raspberry Pi OS, there no longer is the default user pi, as it is (now) considered a security risk. You will now have to set both, a new username and password. While the fix in the software is in progress, please use the Raspberry Pi flashing tool and set the username via the gear button to `pi`. Special thanks to LakesideMiners from the [Discord] for the note. Here is a GIF showing how to set a username this way!
-
-<img src="https://raw.githubusercontent.com/aceisace/Inkycal/assets/Wiki/inkycal-rpi-os-username.gif" alt="raspberry-pi-os-add-user" width="600">
 
 ## Configuring the Raspberry Pi
-1. Flash Raspberry Pi OS according to the [instructions](https://www.raspberrypi.org/software/). Leave the SD card plugged in your computer.
-2. Create and download `settings.json` file for Inkycal from the [WEB-UI](https://aceisace.eu.pythonanywhere.com/inkycal-config-v2-0-0).
-3. Download the `ssh` text file from the [WEB-UI](https://aceisace.eu.pythonanywhere.com/create_ssh).
-4. Create and download a WiFi-configuration file (`wpa_supplicant.conf`) from the [WEB-UI](https://aceisace.eu.pythonanywhere.com/setup_wifi)
-5. Copy these three downloaded files (`settings.json`, `ssh`, `wpa_supplicant.conf`) to the flashed microSD card in the `/boot` folder of microSD card. On Windows, this is the only visible directory on the SD card. On Linux, copy these files to `/boot` of the microSD card.
-6. Eject the microSD card from your computer now, insert it in the Raspberry Pi and power the Raspberry Pi.
-7. Once the green LED has stopped blinking after ~3 minutes, use an SSH client to connect to the Raspberry Pi. On Windows, you can use PUTTY, but you can also use an SSH App.
-on your smartphone. Use the address: `raspberrypi.local` with `pi` as the username and `raspberry` as the password. For more detailed instructions, check out the page from the [Raspberry Pi website](https://www.raspberrypi.org/documentation/remote-access/ssh/)
-8. After connecting via SSH, run the following commands, line by line:
+1. Flash Raspberry Pi OS on your microSD card (min. 4GB) with [Raspberry Pi Imager](https://rptl.io/imager). Use the following settings:
+
+| option | value |
+| :-- | :--: |
+| hostname | inkycal |
+| enable ssh | yes |
+| set username and password | yes |
+| username | a username you like |
+| password | a password you can remember |
+| set Wi-Fi | yes |
+| Wi-Fi SSID | your Wi-Fi name |
+| Wi-Fi password | your Wi-Fi password |
+
+
+2. Create and download `settings.json` file for Inkycal from the [WEB-UI](https://aceisace.eu.pythonanywhere.com/inkycal-config-v2-0-0). Add the modules you want with the add module button.
+3. Copy the `settings.json` to the flashed microSD card in the `/boot` folder of microSD card. On Windows, this is the only visible directory on the SD card. On Linux, copy these files to `/boot` of the microSD card. 
+4. Eject the microSD card from your computer now, insert it in the Raspberry Pi and power the Raspberry Pi.
+5. Once the green LED has stopped blinking after ~3 minutes, you can connect to your Raspberry Pi via SSH using a SSH Client. We suggest [Termius](https://termius.com/download/windows)
+on your smartphone. Use the address: `inkycal.local` with the username and password you set earlier. For more detailed instructions, check out the page from the [Raspberry Pi website](https://www.raspberrypi.org/documentation/remote-access/ssh/)
+6. After connecting via SSH, run the following commands, line by line:
 ```bash
 sudo raspi-config --expand-rootfs
 sudo sed -i s/#dtparam=spi=on/dtparam=spi=on/ /boot/config.txt
 sudo dpkg-reconfigure tzdata
+
+# If you have the 12.48" display, these steps are also required:
+wget http://www.airspayce.com/mikem/bcm2835/bcm2835-1.71.tar.gz
+tar zxvf bcm2835-1.71.tar.gz 
+cd bcm2835-1.71/
+sudo ./configure && sudo make && sudo make check && sudo make install
+wget https://project-downloads.drogon.net/wiringpi-latest.deb
+sudo dpkg -i wiringpi-latest.deb
+
+# If you are using the Raspberry Pi Zero models, you may need to increase the swapfile size to be able to install Inkycal:
+sudo dphys-swapfile swapoff
+sudo sed -i -E '/^CONF_SWAPSIZE=/s/=.*/=256/' /etc/dphys-swapfile
+sudo dphys-swapfile setup
+sudo dphys-swapfile swapon
 ```
 These commands expand the filesystem, enable SPI and set up the correct timezone on the Raspberry Pi. When running the last command, please select the continent you live in, press enter and then select the capital of the country you live in. Lastly, press enter.
-
-10. Change the password for the user pi by entering `passwd` in the Terminal, enter your current password, hit enter, then type your new password and press enter. Please note you will have to remember this password to access your Raspberry Pi.
-11. Follow the steps in `Installation` (see below) on how to install Inkycal.
+7. Follow the steps in `Installation` (see below) on how to install Inkycal.
 
 ## Installing Inkycal
 ⚠️ Please note that although the developers try to keep the installation as simple as possible, the full installation can sometimes take hours on the Raspberry Pi Zero W and is not guaranteed to go smoothly each time. This is because installing dependencies on the zero w takes a long time and is prone to copy-paste-, permission- and configuration errors.
 
-ℹ️ **Looking for a shortcut to safe a few hours?** We know about this problem and have spent a signifcant amount of time to prepare a pre-configured image with the latest version of Inkycal for the Raspberry Pi Zero. It comes with the latest version of Inkycal, is fully tested and uses the Raspberry Pi OS Lite as it's base image. You only need to copy your settings.json file, we already took care of the rest, including auto-start at boot, enabling spi and installing all dependencies in advance. Pretty neat right? Check the [sponsor button]() at the very top of the repo to get access to Inkycal-OS-Lite. This will help keep this project growing and cover the ongoing expenses too! Win-win for everyone! 🎊
+ℹ️ **Looking for a shortcut to safe a few hours?** We know about this problem and have spent a signifcant amount of time to prepare a pre-configured image with the latest version of Inkycal for the Raspberry Pi Zero. It comes with the latest version of Inkycal, is fully tested and uses the Raspberry Pi OS Lite as it's base image. You only need to copy your settings.json file, we already took care of the rest, including auto-start at boot, enabling spi and installing all dependencies in advance. Pretty neat right? Check the [sponsor button](https://github.com/sponsors/aceisace) at the very top of the repo to get access to Inkycal-OS-Lite. This will help keep this project growing and cover the ongoing expenses too! Win-win for everyone! 🎊
 
 
 ### Manual installation
